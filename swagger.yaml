@@ -1,0 +1,327 @@
+swagger: '2.0'
+info:
+  version: '1.0'
+  title: "Payscape Payments API"
+  description: |
+    The Payscape Payments API is a [REST](https://en.wikipedia.org/wiki/Representational_state_transfer)-based API designed to
+    allow Payscape's partners/affiliates to integrate their systems with Payscape's merchant processing capabilities.  The 
+    functionality exposed through the API includes:
+    * onboard merchants 
+    * processing payment transactions
+    * ...
+    
+    # Getting Started
+    In order to use the Payscape Payments API, you will first need to [register as 
+    an affiliate](#register-as-an-affiliate).  Once you have been approved as an affiliate, you'll be able 
+    to then onboard merchants and process transactions through the API.
+    
+    <a name="register-as-an-affiliate"></a>
+    ## Register as an Affiliate
+    Before you can begin onboarding merchants and processing transactions
+    through the Payscape Payments API, you'll first need to become a Payscape
+    affiliate.  Go to [Payscape Registration](https://payscape.com/registration/)
+    to schedule a demo and being the registration process.
+    
+    ## Typical Server Responses
+    Because the Payscape Payment API utilizes the REST architectural style, with HTTP/S as it's underlying transport, standard HTTP response
+    status codes are used to convey the appropriate outcome of calls to the API. [Section 6.1](https://tools.ietf.org/html/rfc7231#section-6) of 
+    [RFC 7231](https://tools.ietf.org/html/rfc7231) has a full description of all of the HTTP response status codes, along with their intended 
+    usage. Below are some of the response codes you may see, along with a brief description.  
+    * 200 `OK` - The request has succeeded.
+    * 201 `Created` - The request has been fulfilled and has resulted in one or more new resources being created.
+    * 204 `No Content` - The server has successfully fulfilled the request and there is no additional content to send in the response payload body.
+    * 400 `Bad Request` - The server cannot or will not process the request due to something that is perceived to be a client error.
+    * 401 `Unauthorized` - The request has not been applied because it lacks valid authentication credentials for the target resource.
+    * 403 `Forbidden` - The server understood the request but refuses to authorize it.
+    * 404 `Not Found` - The origin server did not find a current representation for the target resource or is not willing to disclose that one exists.
+    * 405 `Method Not Allowed` - The method received in the request-line is known by the origin server but not supported by the target resource.
+    * 409 `Conflict` - The request could not be completed due to a conflict with the current state of the target resource.
+    * 429 `Too Many Requests` - The user has sent too many requests in a given amount of time ("rate limiting").
+    * 500 `Internal Server Error` - The server encountered an unexpected condition that prevented it from fulfilling the request.
+    * 503 `Service Unavailable` - The server is currently unable to handle the request due to a temporary overload or scheduled maintenance, which will likely be alleviated after some delay.
+    
+    # Authentication
+    # Error Handling
+    # Versioning
+    
+    A [link](http://example.com).
+
+    Tables:
+
+    | Column1 | Collumn2 |
+    | ------- | -------- |
+    | cell1   | cell2    |
+    
+    # Feedback and Help
+    
+    Text attributes _italic_, *italic*, __bold__, **bold**, `monospace`.
+
+    Horizontal rule:
+
+    ---
+
+    Bullet list:
+      * apples
+      * oranges
+      * pears
+
+    Numbered list:
+      1. apples
+      2. oranges
+      3. pears
+      
+#   license:
+#     name: MIT
+#     url: https://github.com/apiaryio/polls-api/blob/master/LICENSE
+host: ftr0lkb8pi.execute-api.us-east-2.amazonaws.com
+basePath: /dev
+schemes:
+- https
+consumes:
+- application/vnd.payscape.payments.v1+json
+produces:
+- application/vnd.payscape.payments.v1+json
+paths:
+  /merchants:
+    x-summary: Merchants
+#     get:
+#       summary: List All Merchants
+#       responses:
+#         200:
+#           description: Successful Response
+#           schema:
+#             $ref: '#/definitions/ArrayOfMerchants'
+    post:
+      description: |
+        Use the "Create a New Merchant" endpoint to create a new merchant account
+        on the Payscape platform.  To do this you'll first need to [register as
+        an affiliate](#register-as-an-affiliate) with Payscape.
+        
+        Bullet list:
+        * apples
+        * oranges
+        * pears
+        
+        Tables:
+        | Column1 | Collumn2 |
+        | ------- | -------- |
+        | cell1   | cell2    |
+      summary: Create a New Merchant
+      parameters:
+        - name: body
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/CreateMerchantRequest'
+      responses:
+        201:
+          description: ''
+          schema:
+            $ref: '#/definitions/Merchant'
+definitions:
+  Merchant:
+    title: Merchant
+    type: object
+    properties:
+      question:
+        type: string
+      published_at:
+        type: string
+      # choices:
+      #   type: array
+      #   items:
+      #     $ref: '#/definitions/Choice'
+    required:
+      - question
+      - published_at
+      - choices
+    example:
+      question: Favourite programming language?
+      published_at: '2015-08-05T08:40:51.620Z'
+      choices:
+        - choice: Swifts
+          votes: 10
+        - choice: Python
+          votes: 20
+        - choice: Objective-C
+          votes: 30
+        - choice: Ruby
+          votes: 40
+  ArrayOfMerchants:
+    type: array
+    items:
+      $ref: '#/definitions/Merchant'
+    # example:
+    #   - question: Favourite programming language?
+    #     published_at: '2015-08-05T08:40:51.620Z'
+    #     choices:
+    #       - choice: Swifts
+    #         votes: 10
+    #       - choice: Python
+    #         votes: 20
+    #       - choice: Objective-C
+    #         votes: 30
+    #       - choice: Ruby
+    #         votes: 40
+    #   - question: Favourite city?
+    #     published_at: '2015-08-05T08:40:51.620Z'
+    #     choices:
+    #       - choice: Atlanta
+    #         votes: 15
+    #       - choice: Birmingham
+    #         votes: 25
+    #       - choice: Jacksonville
+    #         votes: 35
+    #       - choice: Charlotte
+    #         votes: 45
+  # Choice:
+  #   title: Choice
+  #   type: object
+  #   properties:
+  #     votes:
+  #       type: integer
+  #       format: int32
+  #     choice:
+  #       type: string
+  #   required:
+  #     - votes
+  #     - choice
+  # PaymentDetail:
+  #   title: Payment Detail
+  #   type: object
+  #   discriminator: paymentDetailType
+  #   properties:
+  #     paymentDetailType:
+  #       type: string
+  #       enum: [ CreditCardPaymentDetail, BankPaymentDetail ]
+  #   required:
+  #     - paymentDetailType
+  CreditCardPaymentDetail:
+    title: Credit Card Payment Detail
+    type: object
+    allOf:
+      - $ref: '#/definitions/BillingInformation'
+      - properties:
+          card_number:
+            type: string
+          card_type:
+            type: string
+            enum: [ Visa, Mastercard, Discover, Amex ]
+          expiration_month:
+            type: number
+          expiration_year:
+            type: number
+          cvv:
+            type: number
+          zip:
+            type: string
+      - required:
+        - card_number
+        - card_type
+        - expiration_month
+        - expiration_year
+        - cvv
+  BankPaymentDetail:
+    title: Checking Payment Detail
+    type: object
+    allOf:
+      - $ref: '#/definitions/BillingInformation'
+      - properties:
+          account_type:
+            type: string
+            enum: [ Checking, Savings, General Ledger ]
+          account_number:
+            type: string
+          routing_number:
+            type: string
+      - required:
+        - account_number
+        - routing_number
+  BillingInformation:
+    title: Billing Information
+    type: object
+    discriminator: paymentDetailType
+    properties:
+      # name_on_account:
+      #   type: string
+      paymentDetailType:
+        type: string
+        enum: [ CreditCardPaymentDetail, BankPaymentDetail ]
+      # payment_detail:
+      #   $ref: '#/definitions/PaymentDetail'
+    required:
+      - paymentDetailType
+  Address:
+    title: Address
+    type: object
+    properties:
+      line_1:
+        type: string
+      line_2:
+        type: string
+      city:
+        type: string
+      state:
+        type: string
+      zipcode:
+        type: string
+      country:
+        type: string
+  BusinessInformation:
+    title: Business Information
+    type: object
+    properties:
+      legal_name:
+        type: string
+      doing_business_as:
+        type: string
+      address:
+        $ref: '#/definitions/Address'
+      signer_first_name:
+        type: string
+      signer_last_name:
+        type: string
+      website_url:
+        type: string
+      ein:
+        type: string
+      description:
+        type: string
+        title: Description of the business
+  BankAccountInformation:
+    title: Bank Account Information
+    type: object
+  OwnerInformation:
+    title: Owner Information
+    type: object
+  CreateMerchantRequest:
+    title: Create Merchant Request
+    type: object
+    properties:
+      # business_type:
+      #   type: string
+      #   enum: [ Corporation ]
+      business_information:
+        $ref: '#/definitions/BusinessInformation'
+      bank_account_information:
+        $ref: '#/definitions/BankAccountInformation'
+      owner_information:
+        $ref: '#/definitions/OwnerInformation'
+      billing_information:
+        $ref: '#/definitions/BillingInformation'
+      # choices:
+      #   type: array
+      #   items:
+      #     type: string
+    required:
+      - business_type
+      - business_information
+      - bank_account_information
+      - owner_information
+    # example:
+    #   question: Favourite programming language?
+    #   choices:
+    #     - Swift
+    #     - Python
+    #     - Objective-C
+    #     - Ruby
