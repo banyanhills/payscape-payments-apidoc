@@ -8,7 +8,7 @@ info:
     functionality exposed through the API includes:
     * onboard merchants 
     * processing payment transactions
-    * ...
+    * Processing refunds
     
     # Getting Started
     In order to use the Payscape Payments API, you will first need to [register as 
@@ -43,6 +43,8 @@ info:
     # Authentication
     # Error Handling
     # Versioning
+    # Pagination
+    # Filtering
     
     A [link](http://example.com).
 
