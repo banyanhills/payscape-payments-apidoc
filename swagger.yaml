@@ -6,14 +6,23 @@ info:
     The Payscape Payments API is a [REST](https://en.wikipedia.org/wiki/Representational_state_transfer)-based API designed to
     allow Payscape's partners/affiliates to integrate their systems with Payscape's merchant processing capabilities.  The 
     functionality exposed through the API includes:
-    * onboard merchants 
-    * processing payment transactions
+    * Onboard merchants 
+    * Processing payment transactions
     * Processing refunds
+  
+    The base URL for the payscape API is https://api.payscape.com , specific end points need to be appended to this URL to use the service. 
+    Example, if one want to get list of all merchants of a affiliate below API could be used: 
+    https://api.payscape.com/merchants
+
+    Specific merchant could be fetched using below API by passing merchant id
+    https://api.payscape.com/merchants{merchant_id}
+    
+    All parameters, where relevant, are required unless otherwise specified.
     
     # Getting Started
     In order to use the Payscape Payments API, you will first need to [register as 
-    an affiliate](#register-as-an-affiliate).  Once you have been approved as an affiliate, you'll be able 
-    to then onboard merchants and process transactions through the API.
+    an affiliate](#register-as-an-affiliate). Ppayscape API uses key based authentication method.Once you have been approved as an affiliate, 
+    you can get an API key from Payscape support team. Afterwards one can process transactions through the payscape APIs.
     
     <a name="register-as-an-affiliate"></a>
     ## Register as an Affiliate
