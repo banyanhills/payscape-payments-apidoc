@@ -21,7 +21,7 @@ info:
     
     # Getting Started
     In order to use the Payscape Payments API, you will first need to [register as 
-    an affiliate](#register-as-an-affiliate). Ppayscape API uses key based authentication method.Once you have been approved as an affiliate, 
+    an affiliate](#register-as-an-affiliate). Payscape API uses key based authentication method.Once you have been approved as an affiliate, 
     you can get an API key from Payscape support team. Afterwards one can process transactions through the payscape APIs.
     
     <a name="register-as-an-affiliate"></a>
@@ -29,8 +29,20 @@ info:
     Before you can begin onboarding merchants and processing transactions
     through the Payscape Payments API, you'll first need to become a Payscape
     affiliate.  Go to [Payscape Registration](https://payscape.com/registration/)
-    to schedule a demo and being the registration process.
+    to schedule a demo and understand the registration process.
     
+    # Data structure and response format
+    The Payscape API follows following DATATYPES and Response Formats.
+    Throughout the api the date format we recommend is YYYY-MM-DD HH:MM:SS. 
+    The response format will be JSON having status, message and data key.  
+    {
+      "message": "Successful",
+      "status": 200,
+      "data": {}
+    }
+    # Error Handling
+    Errors and any exception will be captured during API call processing and send back to user with all the details.
+     
     ## Typical Server Responses
     Because the Payscape Payment API utilizes the REST architectural style, with HTTP/S as it's underlying transport, standard HTTP response
     status codes are used to convey the appropriate outcome of calls to the API. [Section 6.1](https://tools.ietf.org/html/rfc7231#section-6) of 
@@ -49,38 +61,34 @@ info:
     * 500 `Internal Server Error` - The server encountered an unexpected condition that prevented it from fulfilling the request.
     * 503 `Service Unavailable` - The server is currently unable to handle the request due to a temporary overload or scheduled maintenance, which will likely be alleviated after some delay.
     
-    # Authentication
-    # Error Handling
     # Versioning
+    Payscape API are version controls. While new version of APIs are deployed there will be support available for previous version(Latest version -2)
     # Pagination
-    # Filtering
-    
-    A [link](http://example.com).
-
-    Tables:
-
-    | Column1 | Collumn2 |
-    | ------- | -------- |
-    | cell1   | cell2    |
-    
-    # Feedback and Help
-    
-    Text attributes _italic_, *italic*, __bold__, **bold**, `monospace`.
-
-    Horizontal rule:
-
-    ---
-
-    Bullet list:
-      * apples
-      * oranges
-      * pears
-
-    Numbered list:
-      1. apples
-      2. oranges
-      3. pears
+    As there could be large amount of data related to merchants, transections etc., Payscape APIs supported paginated output to API calls.
+    Following are the options available to get paginated output.
+      1. page_size
+      2. page_number
+      3. sort_by (assume only one field is specified)
+      4. sort_order (asc, desc)
+    Returns 
+      1.Results
+      2.total_pages
       
+      By default, the pagination information will be in response headers starting with "Pagination-". If requested with a query parameter of "include_pagination_data=true" (false by default), 
+      include a "pagination_data" attribute and "records" attribute in the response body. Otherwise, the body is just an array of records of entities requested.
+    # Filtering
+    Appropriate data filtering options will be available with each APIs. Use need to pass required filter option and data will be servied by API calls accordingly.
+    # Feedback and Help
+    # Authentication 
+    Autherization to payscape platform to use payscape API is accesss controlled with latest security features enabled. You will need to get a client id, user name and password and a link to generate api id and access token
+    to use payscape API form payscape support. 
+    
+    You could Go to [Generate API key](https://payscapeapiuserpooldev.auth.us-east-2.amazoncognito.com/login?response_type=token&client_id=xxxxxxxxxxx&redirect_uri=https://www.google.com)
+    log to using your user id and password and get id_token and access key in response. Pass this id_token in API header.
+    
+    System will validated against given id_token and grant access to API resources accordingly.
+    
+     
 #   license:
 #     name: MIT
 #     url: https://github.com/apiaryio/polls-api/blob/master/LICENSE
@@ -89,34 +97,54 @@ basePath: /dev
 schemes:
 - https
 consumes:
-- application/vnd.payscape.payments.v1+json
+- "application/json"
 produces:
-- application/vnd.payscape.payments.v1+json
+- "application/json"
 paths:
   /merchants:
-    x-summary: Merchants
-#     get:
-#       summary: List All Merchants
-#       responses:
-#         200:
-#           description: Successful Response
-#           schema:
-#             $ref: '#/definitions/ArrayOfMerchants'
-    post:
+    x-summary: List All Merchants
+    get:
       description: |
-        Use the "Create a New Merchant" endpoint to create a new merchant account
+          Use the "List All Merchants" endpoint to get list of merchant for given affiliate
+          on the Payscape platform.  To do this you'll first need to [register as
+          an affiliate](#register-as-an-affiliate) with Payscape and pass affiliate id, user name and password.
+          You can get your access key generated by Go to [Generate API key](https://payscapeapiuserpooldev.auth.us-east-2.amazoncognito.com/login?response_type=token&client_id=xxxxxxxxxxx&redirect_uri=https://www.google.com)
+          log to using your user id and password and get id_token and access key in response. Pass this id_token in API header call.
+          
+          
+          
+          Request body parameters:
+          | Name | Type | description
+          |----- |------|-------
+          |api_key|string|Please get registred as an affiliate to Payscape platform to get your affiliate key.
+          |affiliate_id|string| Please get it from Payscape support team.
+          
+      summary: List All Merchants
+      
+      parameters:
+        - name: body
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/GetMerchantRequest'
+      responses:
+        200:
+         description: Successful Response
+         schema:
+           $ref: '#/definitions/ArrayOfMerchants'
+    post:
+      x-summary: Create New Merchant
+      description: |
+        Use API "Create a New Merchant" endpoint to create a new merchant account
         on the Payscape platform.  To do this you'll first need to [register as
         an affiliate](#register-as-an-affiliate) with Payscape.
         
-        Bullet list:
-        * apples
-        * oranges
-        * pears
-        
-        Tables:
-        | Column1 | Collumn2 |
-        | ------- | -------- |
-        | cell1   | cell2    |
+        Request Body Parameters:
+        | Name | Type | Description
+        | ------- | -------- |----------
+        | api_key|string| Generated using Payscape application using affiliate client key.
+        |marchant_Mane|string| Name of Merchant
+        |marchant_Address|string| Mergent Addresss
       summary: Create a New Merchant
       parameters:
         - name: body
@@ -129,35 +157,82 @@ paths:
           description: ''
           schema:
             $ref: '#/definitions/Merchant'
+  /merchants/{id}:
+    x-summary: Get Merchant Details
+    get:
+      description: |
+          Use the "Get Merchant Details" endpoint to get details about a merchant for given affiliate
+          on the Payscape platform.  To do this you'll first need to [register as
+          an affiliate](#register-as-an-affiliate) with Payscape to get your cliend id, user id and password. You can get 
+          your access key generated by Go to [Generate API key](https://payscapeapiuserpooldev.auth.us-east-2.amazoncognito.com/login?response_type=token&client_id=xxxxxxxxxxx&redirect_uri=https://www.google.com)
+          log to using your user id and password and get id_key and access key in response. Pass this id_token in API header call.
+          
+          Request body parameters:
+          | Name | Type | description
+          |----- |------|-------
+          |api_key|string|You will it when you register to Payscape platform as an affiliate.
+          |merchant_id|number| Enter merchant id for which you are looking for details.
+          
+      summary: Get Merchant Details
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "id"
+        in: "path"
+        required: true
+        type: "string"
+      responses:
+        200:
+          description: "200 response"
+          schema:
+            $ref: '#/definitions/Merchant'
+      security:
+      - APIUserPool-Training: []
+  /transactions:
+    x-summary: Transactions
+    get:
+      description: |
+          Use the "Get Transection" endpoint to get all the transection for an affiliate 
+          on the Payscape platform.  To do this you'll first need to [register as
+          an affiliate](#register-as-an-affiliate) with Payscape and pass affiliate key for fetching 
+          the list of all merchant.
+          
+          Request body parameters:
+          | Name | Type | description
+          |----- |------|-------
+          |cell1|cell2|cell3
+          
+      summary: Get Transections
+      produces:
+      - "application/json"
+      responses:
+        200:
+          description: "200 response"
+          schema:
+            $ref: '#/definitions/Merchant'
+securityDefinitions:
+  APIUserPool-Training:
+    type: "apiKey"
+    name: "id_token"
+    in: "header"
+    x-amazon-apigateway-authtype: "cognito_user_pools"
+ 
 definitions:
   Merchant:
     title: Merchant
     type: object
     properties:
-      question:
+      api_key:
         type: string
-      published_at:
-        type: string
-      # choices:
-      #   type: array
-      #   items:
-      #     $ref: '#/definitions/Choice'
+      Merchant_id:
+        type: number
+     
     required:
-      - question
-      - published_at
+      - api_key
       - choices
-    example:
-      question: Favourite programming language?
-      published_at: '2015-08-05T08:40:51.620Z'
-      choices:
-        - choice: Swifts
-          votes: 10
-        - choice: Python
-          votes: 20
-        - choice: Objective-C
-          votes: 30
-        - choice: Ruby
-          votes: 40
+   
   ArrayOfMerchants:
     type: array
     items:
@@ -305,6 +380,18 @@ definitions:
   OwnerInformation:
     title: Owner Information
     type: object
+  GetMerchantRequest:
+    title: Get Merchants Request
+    type: object
+    properties:
+      api_key:
+        type: string
+      affiliate_id:
+        type: string
+    required:
+      - api_key
+      - affiliate_id
+     
   CreateMerchantRequest:
     title: Create Merchant Request
     type: object
