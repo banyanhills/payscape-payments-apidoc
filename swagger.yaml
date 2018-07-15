@@ -66,20 +66,21 @@ info:
     # Pagination
     As there could be large amount of data related to merchants, transections etc., Payscape APIs supports paginated output to API calls.
     Following are the options available to get paginated output.
-      1. page_size
-      2. page_number
-      3. sort_by (assume only one field is specified)
-      4. sort_order (asc, desc)
+      1. pagelimit (total number of items per page)
+      2. page ( Page required)
+      3. orderbyfield (assume only one field is specified)
+      4. orderbydirection (asc, desc)
     Returns 
       1.Results
       2.total_pages
-      
-    By default, the pagination information will be in response headers starting with "Pagination-". If requested with a query parameter of "include_pagination_data=true" (false by default), 
-    include a "pagination_data" attribute and "records" attribute in the response body. Otherwise, the body is just an array of records of entities requested.
+    By default, the pagination information will be in response headers". 
+    
     # Filtering
-    Appropriate data filtering options will be available with each APIs. Use need to pass required filter option and data will be servied by API calls accordingly.
+    User can filter data on any of the entity atribute by passing it in query parameter. The dat filtered will be filtred based on and condition applied on that entity.
+   
     # Feedback and Help
     You can provide your feedback and write to payscape support team for any help or support.
+   
     # Authentication 
     Autherization to payscape platform to use payscape API is accesss controlled with latest security features enabled. You will need to get a affiliate id/ client id, user name and password and a link to generate api id and access token
     to use payscape API form payscape support. 
@@ -88,6 +89,8 @@ info:
     log using your user id and password and get id_token and access key in response. Pass this id_token in API header to use payscape APIs
     
     System will validated against given id_token and grant access to API resourceses accordingly.
+    
+    There is a Post method available to get your id, access and refresh token programatically through API call by providing your authorizaton information.
     
      
 #   license:
@@ -102,6 +105,33 @@ consumes:
 produces:
 - "application/json"
 paths:
+  /affiliate:
+    x-summary: Affiliate
+    post:
+      x-summary: Get Access token
+      description: |
+          Use the "Get Access Token" endpoint to get access for given affiliate
+          on the Payscape platform.  To do this you'll first need to [register as
+          an affiliate](#register-as-an-affiliate) with Payscape and pass affiliate id/client id, user name and password.
+          
+          
+          
+          Request parameters:
+          | Name | Type | description
+          |----- |------|-------
+          |client_id|string| 
+          |username|string| 
+          |password|string|        
+      summary: Get Access token
+      parameters:
+        - name: body
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/Tokenrequest'
+      responses:
+        200:
+         description: Successful Response
   /merchants:
     x-summary: Merchants
     get:
@@ -125,16 +155,28 @@ paths:
         in: "header"
         required: true
         type: "string"
-      - name: "affiliate_id"
-        in: "body"
-        required: true
-        schema:
-            $ref: '#/definitions/GetMerchantRequest'
+      - name: "pagelimit"
+        in: "header"
+        required: false
+        type: integer 
+      - name: "page"
+        in: "header"
+        required: false
+        type: integer 
+      - name: "orderbyfield"
+        in: "header"
+        required: false
+        type: string  
+      - name: "orderbydirection"
+        in: "header"
+        required: false
+        type: string 
+        enum: [Asc, Desc]
       responses:
         200:
          description: Successful Response
-         schema:
-           $ref: '#/definitions/ArrayOfMerchants'
+        # schema:
+        #   $ref: '#/definitions/ArrayOfMerchants'
       security:
       - APIUserPool-Training: []
     post:
@@ -148,7 +190,6 @@ paths:
         | Name | Type | Description
         | ------- | -------- |----------
         |id_token|string| Generated using Payscape application using affiliate client key and pass it in header under id_token.
-        |affiliate_id |integre| Id of affiliate assigned by payscape
         |first_name |string| first name of Merchant
         |last_name|string| last name of mergent 
         |business_information|object| All the details about merchant business details
@@ -160,8 +201,7 @@ paths:
         - name: "id_token"
           in: "header"
           required: true
-          type: integer
-          format: int32
+          type: "string"
         - name: body
           in: body
           required: true
@@ -183,7 +223,6 @@ paths:
         | Name | Type | Description
         | ------- | -------- |----------
         |id_token|string| Generated using Payscape application using affiliate client key and pass it in header under id_token.
-        |affiliate_id |integre| Id of affiliate assigned by payscape
         |first_name |string| first name of Merchant
         |last_name|string| last name of mergent 
         |business_information|object| All the details about merchant business details
@@ -219,7 +258,6 @@ paths:
           | Name | Type | description
           |----- |------|-------
           |Id_token|string|You will it when you register to Payscape platform as an affiliate.
-          |affiliate_id |integre| Id of affiliate assigned by payscape
           |merchant_id|number| Enter merchant id for which you are looking for details.
           
       summary: Get Merchant Details
@@ -236,11 +274,6 @@ paths:
         in: "path"
         required: true
         type: "string"
-      - name: "body"
-        in: "body"
-        required: true
-        schema:
-            $ref: '#/definitions/GetMerchantRequest'
       responses:
         200:
           description: "Information related to merchant has been fetched successfully"
@@ -256,7 +289,6 @@ paths:
           | Name | Type | description
           |----- |------|-------
           |Id_token|string|Pass your ID token in the header.
-          |affiliate_id |integre| Id of affiliate assigned by payscape
           |merchant_id|number| Enter merchant id which need to be deleted.
           
       summary: Delete Merchant
@@ -273,17 +305,49 @@ paths:
         in: "path"
         required: true
         type: "string"
-      - name: "body"
-        in: "body"
-        required: true
-        schema:
-            $ref: '#/definitions/Affiliate'
       responses:
         200:
-          description: "Requested MErchant is successfully deleted"
+          description: "Requested Merchant is successfully deleted"
       security:
       - APIUserPool-Training: []
-
+    put:
+      x-summary: Update Merchant Details
+      description: |
+        Use API "Update Merchant" endpoint to update selected merchant for an affiliate
+        on the Payscape platform.  To do this you'll first need to [register as
+        an affiliate](#register-as-an-affiliate) with Payscape.
+        
+        Request Body Parameters:
+        | Name | Type | Description
+        | ------- | -------- |----------
+        |id_token|string| Generated using Payscape application using affiliate client key and pass it in header under id_token.
+        |first_name |string| first name of Merchant
+        |last_name|string| last name of mergent 
+        |business_information|object| All the details about merchant business details
+        |bank_account|object| All the details about merchant bank account       
+        |owner_information|object| All the details about business owner
+        |billing_information|object| All the details about merchant billing 
+      summary: Update Merchant Details
+      
+      parameters:
+        - name: "id_token"
+          in: "header"
+          required: true
+          type: "string"
+        - name: "id"
+          in: "path"
+          required: true
+          type: "string"
+        - name: body
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/CreateMerchantRequest'
+      responses:
+        200:
+          description: 'The request has been fulfilled and requested Merchant has been updated'
+      security:
+      - APIUserPool-Training: []
   /transactions:
     x-summary: Transactions
     get:
@@ -314,19 +378,21 @@ securityDefinitions:
     x-amazon-apigateway-authtype: "cognito_user_pools"
  
 definitions:
-  Affiliate:
-    title: Affiliate
+  Tokenrequest:
+    title: Tokenrequest
     type: object
     properties:
-      first_name:
-        type: string
-      last_name:
-        type: string
-      affiliate_id:
+      Client_id:
         type: integer
         format: int32
+      username:
+        type: string
+      password:
+        type: string
     required:
-      - affiliate_id
+      - client_id
+      - username
+      - password
   Merchant:
     title: Merchant
     type: object
@@ -596,23 +662,10 @@ definitions:
       - last_names
       - email
       - ssn
-  GetMerchantRequest:
-    title: Get Merchants Request
-    type: object
-    properties:
-      affiliate_id:
-        type: integer
-        format: int32
-    required:
-      - affiliate_id
-     
   CreateMerchantRequest:
     title: Create Merchant Request
     type: object
     properties:
-      affiliate_id:
-        type: integer
-        format: int32
       business_information:
         $ref: '#/definitions/BusinessInformation'
       bank_account:
@@ -622,7 +675,6 @@ definitions:
       billing_information:
         $ref: '#/definitions/BillingInformation'
     required:
-      - affiliate_id
       - business_information
       - billing_information
       - bank_account
