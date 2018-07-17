@@ -147,8 +147,7 @@ paths:
           | Name | Type | description
           |----- |------|-------
           |id_token|string|Generated using Payscape application using affiliate client key.Pass it in id_token in header.
-          |affiliate_id|string| Please get it from Payscape support team.
-          
+
       summary: List All Merchants
       parameters:
       - name: "id_token"
@@ -563,6 +562,9 @@ definitions:
       address:
        type: string
        enum: [123 Full St. NW]
+      address_2:
+       type: string
+       enum: [Others]
       city:
        type: string
        enum: [Atlanta]
@@ -587,6 +589,9 @@ definitions:
       website:
         type: string
         enum: [www.madebygio.com]
+      ein:
+        type: string
+        enum: [123456789]
   BankAccountInformation:
     title: Bank Account Information
     type: object
@@ -633,6 +638,9 @@ definitions:
       address:
         type: string
         enum: [415 Euclid Terr NE Unit B.]
+      address_2:
+        type: string
+        enum: [Others]
       city:
         type: string 
         enum: [Atlanta]
@@ -674,11 +682,19 @@ definitions:
         $ref: '#/definitions/OwnerInformation'
       billing_information:
         $ref: '#/definitions/BillingInformation'
+      client_id:
+        type: integer
+        enum: [1]
+      affiliate_id:
+        type: integer
+        enum: [1]
     required:
       - business_information
       - billing_information
       - bank_account
       - owner_information
+      - client_id
+      - affiliate_id
     # example:
     #   question: Favourite programming language?
     #   choices:
