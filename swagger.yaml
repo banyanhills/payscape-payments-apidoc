@@ -278,37 +278,6 @@ paths:
           description: "Information related to merchant has been fetched successfully"
       security:
       - APIUserPool-Training: []
-    delete:
-      description: |
-          Use the "Delete Merchant" endpoint to delete merchant for a merchant for given affiliate
-          on the Payscape platform.  To do this you'll first need to [register as
-          an affiliate](#register-as-an-affiliate) with Payscape to get your cliend id, user id and password. 
-          
-          Request body parameters:
-          | Name | Type | description
-          |----- |------|-------
-          |Id_token|string|Pass your ID token in the header.
-          |merchant_id|number| Enter merchant id which need to be deleted.
-          
-      summary: Delete Merchant
-      consumes:
-      - "application/json"
-      produces:
-      - "application/json"
-      parameters:
-      - name: "id_token"
-        in: "header"
-        required: true
-        type: "string"
-      - name: "id"
-        in: "path"
-        required: true
-        type: "string"
-      responses:
-        200:
-          description: "Requested Merchant is successfully deleted"
-      security:
-      - APIUserPool-Training: []
     put:
       x-summary: Update Merchant Details
       description: |
